@@ -59,7 +59,7 @@ SERVER_TIMEZONE_CITY="`${HOME}/utilities/config/ExtractConfigValue.sh 'SERVERTIM
 if ( [ "`${HOME}/utilities/config/CheckConfigValue.sh PRODUCTION:1`" = "1" ] )
 then
 	/bin/echo "*/2 * * * * export HOME="${HOME}" && ${HOME}/cron/PerformScalingFromCron.sh" >> /var/spool/cron/crontabs/root
-#	/bin/echo "*/3 * * * * export HOME="${HOME}" && ${HOME}/cron/DeadOrAliveFromCron.sh" >> /var/spool/cron/crontabs/root
+	/bin/echo "*/3 * * * * export HOME="${HOME}" && ${HOME}/cron/DeadOrAliveFromCron.sh" >> /var/spool/cron/crontabs/root
 	#/bin/echo "30 8 * * *  export HOME="${HOME}" && ${HOME}/utilities/processing/ScalingUpdateEvent.sh 5" >> /var/spool/cron/crontabs/root
 	#/bin/echo "30 17 * * *  export HOME="${HOME}" && ${HOME}/utilities/processing/ScalingUpdateEvent.sh 3" >> /var/spool/cron/crontabs/root
 fi

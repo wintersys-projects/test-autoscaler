@@ -51,7 +51,7 @@ BUILD_IDENTIFIER="`${HOME}/utilities/config/ExtractConfigValue.sh 'BUILDIDENTIFI
 SERVER_USER="`${HOME}/utilities/config/ExtractConfigValue.sh 'SERVERUSER'`"
 SERVER_USER_PASSWORD="`${HOME}/utilities/config/ExtractConfigValue.sh 'SERVERUSERPASSWORD'`"
 SSH_PORT="`${HOME}/utilities/config/ExtractConfigValue.sh 'SSHPORT'`"
-PROXY_SERVER="`${HOME}/utilities/config/ExtractConfigValue.sh 'PROXYSERVER'`"
+REVERSE_PROXY="`${HOME}/utilities/config/ExtractConfigValue.sh 'REVERSEPROXY'`"
 OPTIONS=" -o ConnectTimeout=10 -o ConnectionAttempts=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "
 BUILD_KEY="${HOME}/.ssh/id_${ALGORITHM}_AGILE_DEPLOYMENT_BUILD_KEY_${BUILD_IDENTIFIER}"
 
@@ -260,7 +260,7 @@ fi
 
 if ( [ "${failedonlinecheck}" = "0" ] )
 then
-	if ( [ "${BUILD_ARCHIVE_CHOICE}" != "virgin" ] && [ "${BUILD_ARCHIVE_CHOICE}" != "baseline" ] && [ "${PROXY_SERVER}" = "1" ] )
+	if ( [ "${BUILD_ARCHIVE_CHOICE}" != "virgin" ] && [ "${BUILD_ARCHIVE_CHOICE}" != "baseline" ] && [ "${REVERSE_PROXY}" = "1" ] )
 	then
 		proxy_server_name="rp-${REGION}-${BUILD_IDENTIFIER}"
   		proxy_server_ips="`${HOME}/providerscripts/server/GetServerPrivateIPAddresses.sh ${proxy_server_name} ${CLOUDHOST}`"

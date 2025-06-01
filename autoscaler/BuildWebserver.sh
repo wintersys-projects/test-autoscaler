@@ -51,6 +51,7 @@ BUILD_IDENTIFIER="`${HOME}/utilities/config/ExtractConfigValue.sh 'BUILDIDENTIFI
 SERVER_USER="`${HOME}/utilities/config/ExtractConfigValue.sh 'SERVERUSER'`"
 SERVER_USER_PASSWORD="`${HOME}/utilities/config/ExtractConfigValue.sh 'SERVERUSERPASSWORD'`"
 SSH_PORT="`${HOME}/utilities/config/ExtractConfigValue.sh 'SSHPORT'`"
+PROXY_SERVER="`${HOME}/utilities/config/ExtractConfigValue.sh 'PROXYSERVER'`"
 OPTIONS=" -o ConnectTimeout=10 -o ConnectionAttempts=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "
 BUILD_KEY="${HOME}/.ssh/id_${ALGORITHM}_AGILE_DEPLOYMENT_BUILD_KEY_${BUILD_IDENTIFIER}"
 
@@ -259,7 +260,17 @@ fi
 
 if ( [ "${failedonlinecheck}" = "0" ] )
 then
-	${HOME}/autoscaler/AddIPToDNS.sh ${ip}
+	if ( [ "${BUILD_ARCHIVE_CHOICE}" != "virgin" ] && [ "${BUILD_ARCHIVE_CHOICE}" != "baseline" ] && [ "${PROXY_SERVER}" = "1" ] )
+	then
+		proxy_server_name="rp-${REGION}-${BUILD_IDENTIFIER}"
+  		proxy_server_ips="`${HOME}/providerscripts/server/GetServerPrivateIPAddresses.sh ${proxy_server_name} ${CLOUDHOST}`"
+    		for proxy_server_ip in ${proxy_server_ips}
+      		do
+			/usr/bin/ssh -q -p ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${SERVER_USER}@${private_ip}  "${SUDO} /home/${SERVER_USER}/providerscripts/webserver/configuration/reverseproxy/AddNewIPToReverseProxyIPList.sh ${private_ip}"
+        	done
+	else
+		${HOME}/autoscaler/AddIPToDNS.sh ${ip}
+  	fi
 elif ( [ "${failedonlinecheck}" = "1" ] )
 then
 	if ( [ -f ${HOME}/runtime/INITIALLY_PROVISIONING-${buildno}.lock ] )

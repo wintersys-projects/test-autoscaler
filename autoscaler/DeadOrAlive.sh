@@ -155,24 +155,27 @@ probe_by_curl()
         fi
 }
 
-#Purge any detached IP addresses from the DNS system
+#Purge any detached IP addresses from the DNS system if we are not using reverse proxies
 
-dnsips="`${HOME}/autoscaler/GetDNSIPs.sh`"
-ips="`${HOME}/providerscripts/server/GetServerIPAddresses.sh "ws-${REGION}-${BUILD_IDENTIFIER}" ${CLOUDHOST}`"
-
-if ( [ "${dnsips}" = "" ] )
+if ( [ "${REVERSE_PROXY}" != "1" ] )
 then
-        exit
-fi
+        dnsips="`${HOME}/autoscaler/GetDNSIPs.sh`"
+        ips="`${HOME}/providerscripts/server/GetServerIPAddresses.sh "ws-${REGION}-${BUILD_IDENTIFIER}" ${CLOUDHOST}`"
 
-for dnsip in ${dnsips}
-do
-        if ( [ "`/bin/echo ${ips} | /bin/grep ${dnsip}`" = "" ] )
+        if ( [ "${dnsips}" = "" ] )
         then
-                /bin/echo "${0} `/bin/date`: Purging detached IP address: ${dnsip}" 
-                ${HOME}/autoscaler/RemoveIPFromDNS.sh ${dnsip}
+                exit
         fi
-done
+
+        for dnsip in ${dnsips}
+        do
+                if ( [ "`/bin/echo ${ips} | /bin/grep ${dnsip}`" = "" ] )
+                then
+                        /bin/echo "${0} `/bin/date`: Purging detached IP address: ${dnsip}" 
+                        ${HOME}/autoscaler/RemoveIPFromDNS.sh ${dnsip}
+                fi
+        done
+fi
 
 
 if ( [ "`${HOME}/providerscripts/datastore/configwrapper/ListFromConfigDatastore.sh STATIC_SCALE:*`" = "" ] )

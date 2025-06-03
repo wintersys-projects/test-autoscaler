@@ -81,13 +81,16 @@ endit ()
                 if ( [ "`${HOME}/providerscripts/datastore/configwrapper/ListFromConfigDatastore.sh "beingbuiltips/*" 2>/dev/null | /bin/grep ${down_ip}`" = "" ] || [ "`/usr/bin/find ${HOME}/runtime/POTENTIAL_STALLED_BUILD:${ip} -mmin +30`" != "" ] )
                 then
                         /bin/echo "Ending server with ip address ${down_ip}"
-                        /bin/echo "${0} `/bin/date`: Webserver with ip address: ${down_ip} is having it's ip address removed from the DNS system" 
-                        public_ip_address="`${HOME}/providerscripts/server/GetServerPublicIPAddressByIP.sh ${down_ip} ${CLOUDHOST}`"
-                        ${HOME}/autoscaler/RemoveIPFromDNS.sh ${public_ip_address}
+
+                        if ( [ "${REVERSE_PROXY}" != "1" ] )
+                        then
+                                /bin/echo "${0} `/bin/date`: Webserver with ip address: ${down_ip} is having it's ip address removed from the DNS system" 
+                                public_ip_address="`${HOME}/providerscripts/server/GetServerPublicIPAddressByIP.sh ${down_ip} ${CLOUDHOST}`"
+                                ${HOME}/autoscaler/RemoveIPFromDNS.sh ${public_ip_address}
+                        fi
+                        
                         ${HOME}/providerscripts/email/SendEmail.sh "A WEBSERVER IS BEING SHUTDOWN ${down_ip}" "${reason}" "INFO"
     
-
-       
                         /usr/bin/ssh -q -p ${SSH_PORT} -i ${HOME}/.ssh/id_${ALGORITHM}_AGILE_DEPLOYMENT_BUILD_KEY_${BUILD_IDENTIFIER} -o ConnectTimeout=10 -o ConnectionAttempts=3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${SERVER_USER}@${down_ip} "${SUDO} ${HOME}/utilities/housekeeping/ShutdownThisWebserver.sh"
                         /bin/echo "${0} `/bin/date`: Webserver with ip address: ${down_ip}  has been shutdown" 
                         ${HOME}/providerscripts/server/DestroyServer.sh ${public_ip_address} ${CLOUDHOST} ${down_ip}

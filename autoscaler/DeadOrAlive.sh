@@ -413,7 +413,10 @@ do
         then
                 if ( [ "`${HOME}/autoscaler/DoubleCheckConfig.sh ${ip}`" = "ok" ] )
                 then
-                        ${HOME}/autoscaler/AddIPToDNS.sh "`${HOME}/providerscripts/server/GetServerPublicIPAddressByIP.sh ${ip} ${CLOUDHOST}`" &
+                        if ( [ "${REVERSE_PROXY}" != "1" ] )
+                        then
+                                ${HOME}/autoscaler/AddIPToDNS.sh "`${HOME}/providerscripts/server/GetServerPublicIPAddressByIP.sh ${ip} ${CLOUDHOST}`" &
+                        fi
                         if ( [ -f ${HOME}/runtime/potentialenders/listofipstoend.dat ] )
                         then
                                 /bin/sed -i "s/${ip}//g" ${HOME}/runtime/potentialenders/listofipstoend.dat

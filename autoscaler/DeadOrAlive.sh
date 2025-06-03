@@ -81,11 +81,11 @@ endit ()
                 if ( [ "`${HOME}/providerscripts/datastore/configwrapper/ListFromConfigDatastore.sh "beingbuiltips/*" 2>/dev/null | /bin/grep ${down_ip}`" = "" ] || [ "`/usr/bin/find ${HOME}/runtime/POTENTIAL_STALLED_BUILD:${ip} -mmin +30`" != "" ] )
                 then
                         /bin/echo "Ending server with ip address ${down_ip}"
-
+                        
+                        public_ip_address="`${HOME}/providerscripts/server/GetServerPublicIPAddressByIP.sh ${down_ip} ${CLOUDHOST}`"
                         if ( [ "${REVERSE_PROXY}" != "1" ] )
                         then
                                 /bin/echo "${0} `/bin/date`: Webserver with ip address: ${down_ip} is having it's ip address removed from the DNS system" 
-                                public_ip_address="`${HOME}/providerscripts/server/GetServerPublicIPAddressByIP.sh ${down_ip} ${CLOUDHOST}`"
                                 ${HOME}/autoscaler/RemoveIPFromDNS.sh ${public_ip_address}
                         fi
                         

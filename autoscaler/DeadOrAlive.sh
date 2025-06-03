@@ -208,13 +208,13 @@ done
 all_ips="`${HOME}/providerscripts/server/GetServerPrivateIPAddresses.sh "ws-${REGION}-${BUILD_IDENTIFIER}-${autoscaler_no}" ${CLOUDHOST}`"
 online_ips="${all_ips}"
 
-for ip in ${online_ips}
-do
-        if ( [ "`${HOME}/providerscripts/datastore/configwrapper/ListFromConfigDatastore.sh "beingbuiltips/${ip}" 2>/dev/null`" != "" ] )
-        then
-                ${HOME}/providerscripts/datastore/configwrapper/DeleteFromConfigDatastore.sh "beingbuiltips/${ip}"
-        fi
-done
+#for ip in ${online_ips}
+#do
+#        if ( [ "`${HOME}/providerscripts/datastore/configwrapper/ListFromConfigDatastore.sh "beingbuiltips/${ip}" 2>/dev/null`" != "" ] )
+#        then
+#                ${HOME}/providerscripts/datastore/configwrapper/DeleteFromConfigDatastore.sh "beingbuiltips/${ip}"
+#        fi
+#done
 
 /bin/echo "Performing checks to see which webservers are online and active"
 /bin/echo "1: Current webserver online webserver list is : `/bin/echo ${online_ips} | /bin/sed 's/\n//g'`"

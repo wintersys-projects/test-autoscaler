@@ -25,11 +25,6 @@ export HOME="`/bin/cat /home/homedir.dat`"
 ip="${1}"
 cloudhost="${2}"
 
-if ( [ "`/bin/echo ${ip} | /bin/grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'`" = "" ] )
-then
-	exit
-fi
-
 if ( [ -f ${HOME}/DROPLET ] || [ "${cloudhost}" = "digitalocean" ] )
 then
 	/usr/local/bin/doctl compute droplet list -o json | /usr/bin/jq -r '.[] | select (.networks.v4[] | select (.ip_address == "'${ip}'")).networks.v4[] | select (.type == "public").ip_address'
@@ -44,12 +39,26 @@ fi
 
 if ( [ -f ${HOME}/LINODE ] || [ "${cloudhost}" = "linode" ] )
 then
-	linodeids="`/usr/local/bin/linode-cli --json linodes list | /usr/bin/jq '.[].id'`"
+	#linodeids="`/usr/local/bin/linode-cli --json linodes list | /usr/bin/jq '.[].id'`"
         
-	for linodeid in ${linodeids}
-	do
-		/usr/local/bin/linode-cli --json  linodes ips-list ${linodeid} | /usr/bin/jq -r '.[].ipv4.vpc[] | select (.address == "'${ip}'").nat_1_1'  
-	done
+	##for linodeid in ${linodeids}
+	#do
+#		/usr/local/bin/linode-cli --json  linodes ips-list ${linodeid} | /usr/bin/jq -r '.[].ipv4.vpc[] | select (.address == "'${ip}'").nat_1_1'  
+#	done
+        linode_ids="`/usr/local/bin/linode-cli --json linodes list | /usr/bin/jq '.[].id'`"
+        matched_linode_id=""
+        for linode_id in ${linode_ids}
+        do
+                if ( [ "`/usr/local/bin/linode-cli --json  linodes ips-list ${linode_id} | /usr/bin/jq -r '.[].ipv4.vpc[].address'`" = "${ip}" ] )
+                then
+                        matched_linode_id="${linode_id}"
+                fi
+        done
+
+        if ( [ "${matched_linode_id}" != "" ] )
+        then
+                /usr/local/bin/linode-cli  --json linodes ips-list ${matched_linode_id} | /usr/bin/jq -r '.[].ipv4.public[].address'
+        fi
 fi
 
 if ( [ -f ${HOME}/VULTR ] || [ "${cloudhost}" = "vultr" ] )

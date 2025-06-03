@@ -87,6 +87,8 @@ endit ()
                         then
                                 /bin/echo "${0} `/bin/date`: Webserver with ip address: ${down_ip} is having it's ip address removed from the DNS system" 
                                 ${HOME}/autoscaler/RemoveIPFromDNS.sh ${public_ip_address}
+                        else
+                                ${HOME}/utilities/housekeeping/PurgeWebserverIPFromProxy.sh ${down_ip}
                         fi
                         
                         ${HOME}/providerscripts/email/SendEmail.sh "A WEBSERVER IS BEING SHUTDOWN ${down_ip}" "${reason}" "INFO"

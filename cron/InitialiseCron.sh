@@ -20,6 +20,11 @@
 #######################################################################################
 #set -x
 
+if ( [ -f /var/spool/cron/crontabs/root ] )
+then
+        /bin/rm /var/spool/cron/crontabs/root
+fi
+
 #Setup crontab
 
 /bin/echo "MAILTO=''" > /var/spool/cron/crontabs/root

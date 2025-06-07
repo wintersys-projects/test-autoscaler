@@ -117,6 +117,8 @@ ${HOME}/providerscripts/email/SendEmail.sh "A NEW AUTOSCALER HAS BEEN SUCCESSFUL
 /bin/echo "${0} Enforcing permissions"
 ${HOME}/utilities/security/EnforcePermissions.sh
 
+GENERATE_WHOLE_MACHINE_DUMP="1"
+
 /bin/echo "${0} Updating Software"
 if ( [ "${GENERATE_WHOLE_MACHINE_DUMP}" = "0" ] )
 then
@@ -136,8 +138,5 @@ then
    		archive_name="autoscaler"
 	fi
 
-	SERVER_USER_PASSWORD="`${HOME}/utilities/config/ExtractConfigValue.sh 'SERVERUSERPASSWORD'`"
-	SUDO="/bin/echo ${SERVER_USER_PASSWORD} | /usr/bin/sudo -S -E"
-
-	${SUDO} /usr/bin/tar -cvpzf ${HOME}/machinedump/${archive_name}_backup.tar.gz --exclude="${archive_name)_backup.tar.gz" --exclude='dev/*' --exclude='proc/*' --exclude='sys/*' --exclude='tmp/*' --exclude='run/*' --exclude='mnt/*' --exclude='media/*' --exclude='lost+found/*' / &
+	/usr/bin/tar -cvpzf ${HOME}/machinedump/${archive_name}_backup.tar.gz --exclude="${archive_name}_backup.tar.gz" --exclude='dev/*' --exclude='proc/*' --exclude='sys/*' --exclude='tmp/*' --exclude='run/*' --exclude='mnt/*' --exclude='media/*' --exclude='lost+found/*' / &
 fi

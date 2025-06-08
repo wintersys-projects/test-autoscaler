@@ -117,8 +117,6 @@ ${HOME}/providerscripts/email/SendEmail.sh "A NEW AUTOSCALER HAS BEEN SUCCESSFUL
 /bin/echo "${0} Enforcing permissions"
 ${HOME}/utilities/security/EnforcePermissions.sh
 
-GENERATE_WHOLE_MACHINE_DUMP="1"
-
 /bin/echo "${0} Updating Software"
 if ( [ "${GENERATE_WHOLE_MACHINE_DUMP}" = "0" ] )
 then

@@ -149,6 +149,6 @@ then
 
  	if ( [ "${count}" = "5" ] )
   	then
-		${HOME}/providerscripts/email/SendEmail.sh "FAILED TO GENERATE WHOLE MACHINE BACKUP on webserver" "It hasn't been possible to generate a whole machine backup on a webserver machine" "ERROR"
+		${HOME}/providerscripts/email/SendEmail.sh "FAILED TO GENERATE WHOLE MACHINE BACKUP on the autoscaler" "It hasn't been possible to generate a whole machine backup on the autoscaler machine" "ERROR"
    	fi
 fi

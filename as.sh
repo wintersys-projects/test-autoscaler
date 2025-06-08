@@ -82,6 +82,7 @@ fi
 GIT_EMAIL_ADDRESS="`${HOME}/utilities/config/ExtractConfigValue.sh 'GITEMAILADDRESS'`"
 BUILDOS="`${HOME}/utilities/config/ExtractConfigValue.sh 'BUILDOS'`"
 ROOT_DOMAIN="`/bin/echo ${WEBSITE_URL} | /usr/bin/awk -F'.' '{$1=""}1' | /bin/sed 's/^ //g' | /bin/sed 's/ /./g'`"
+GENERATE_WHOLE_MACHINE_DUMP="`${HOME}/utilities/config/ExtractConfigValue.sh 'GENERATEWHOLEMACHINEDUMP'`"
 GIT_USER="`${HOME}/utilities/config/ExtractConfigValue.sh 'GITUSER'  | /bin/sed 's/#/ /g'` "
 
 #Initialise Git

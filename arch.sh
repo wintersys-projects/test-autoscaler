@@ -104,6 +104,9 @@ cd ${HOME}
 /bin/echo "${0} Initialising datastore config"
 ${HOME}/providerscripts/datastore/InitialiseDatastoreConfig.sh
 
+/bin/echo "${0} Initialising crontab"
+${HOME}/cron/InitialiseCron.sh
+
 details=""
 for directory in `/bin/ls /home | /bin/grep "X*X"`
 do

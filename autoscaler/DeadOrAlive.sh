@@ -163,7 +163,7 @@ probe_by_curl()
 
 #Purge any detached IP addresses from the DNS system if we are not using reverse proxies
 
-if ( [ "${REVERSE_PROXY}" != "1" ] )
+if ( [ "${NO_REVERSE_PROXY}" = "0" ] )
 then
         dnsips="`${HOME}/autoscaler/GetDNSIPs.sh`"
         ips="`${HOME}/providerscripts/server/GetServerIPAddresses.sh "ws-${REGION}-${BUILD_IDENTIFIER}" ${CLOUDHOST}`"

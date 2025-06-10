@@ -407,7 +407,7 @@ do
         then
                 if ( [ "`${HOME}/autoscaler/DoubleCheckConfig.sh ${ip}`" = "ok" ] )
                 then
-                        if ( [ "${REVERSE_PROXY}" != "1" ] )
+                        if ( [ "${NO_REVERSE_PROXY}" = "0" ] )
                         then
                                 ${HOME}/autoscaler/AddIPToDNS.sh "`${HOME}/providerscripts/server/GetServerPublicIPAddressByIP.sh ${ip} ${CLOUDHOST}`" &
                         fi

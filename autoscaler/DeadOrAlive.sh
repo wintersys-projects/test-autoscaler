@@ -53,7 +53,7 @@ CLOUDHOST="`${HOME}/utilities/config/ExtractConfigValue.sh 'CLOUDHOST'`"
 BUILD_IDENTIFIER="`${HOME}/utilities/config/ExtractConfigValue.sh 'BUILDIDENTIFIER'`"
 REGION="`${HOME}/utilities/config/ExtractConfigValue.sh 'REGION'`"
 ALGORITHM="`${HOME}/utilities/config/ExtractConfigValue.sh 'ALGORITHM'`"
-REVERSE_PROXY="`${HOME}/utilities/config/ExtractConfigValue.sh 'REVERSEPROXY'`"
+NO_REVERSE_PROXY="`${HOME}/utilities/config/ExtractConfigValue.sh 'NOREVERSEPROXY'`"
 SERVER_USER="`${HOME}/utilities/config/ExtractConfigValue.sh 'SERVERUSER'`"
 SERVER_USER_PASSWORD="`${HOME}/utilities/config/ExtractConfigValue.sh 'SERVERUSERPASSWORD'`"
 SSH_PORT="`${HOME}/utilities/config/ExtractConfigValue.sh 'SSHPORT'`"
@@ -83,7 +83,7 @@ endit ()
                         /bin/echo "Ending server with ip address ${down_ip}"
                         
                         public_ip_address="`${HOME}/providerscripts/server/GetServerPublicIPAddressByIP.sh ${down_ip} ${CLOUDHOST}`"
-                        if ( [ "${REVERSE_PROXY}" != "1" ] )
+                        if ( [ "${NO_REVERSE_PROXY}" != "0" ] )
                         then
                                 /bin/echo "${0} `/bin/date`: Webserver with ip address: ${down_ip} is having it's ip address removed from the DNS system" 
                                 ${HOME}/autoscaler/RemoveIPFromDNS.sh ${public_ip_address}

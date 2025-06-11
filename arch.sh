@@ -2,7 +2,7 @@
 ####################################################################################################
 # Author : Peter Winter
 # Date   : 04/07/2016
-# Description : This script will build the "autoscaler" from scratch
+# Description : This script will build the "autoscaler" when a whole machine backup is being used
 ####################################################################################################
 # License Agreement:
 # This file is part of The Agile Deployment Toolkit.

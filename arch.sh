@@ -80,13 +80,13 @@ then
     /bin/chmod 755 ${HOME}/runtime
 fi
 
-/bin/echo "${0} Initialising cloudhost config"
-${HOME}/providerscripts/cloudhost/InitialiseCloudhostConfig.sh
+#/bin/echo "${0} Initialising cloudhost config"
+#${HOME}/providerscripts/cloudhost/InitialiseCloudhostConfig.sh
 
 cd ${HOME}
 
-/bin/echo "${0} Initialising datastore config"
-${HOME}/providerscripts/datastore/InitialiseDatastoreConfig.sh
+#/bin/echo "${0} Initialising datastore config"
+#${HOME}/providerscripts/datastore/InitialiseDatastoreConfig.sh
 
 /bin/echo "${0} Initialising crontab"
 ${HOME}/cron/InitialiseCron.sh

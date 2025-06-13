@@ -24,7 +24,12 @@ HOME="`/bin/cat /home/homedir.dat`"
 
 if ( [ -d ${HOME}/logs ] )
 then
-	/bin/rm ${HOME}/logs/*
+	/bin/rm -r ${HOME}/logs/*
+fi
+
+if ( [ ! -d ${HOME}/logs//initialbuild ] )
+then
+	/bin/mkdir ${HOME}/logs//initialbuild
 fi
 
 out_file="initialbuild/autoscaler-build-out-`/bin/date | /bin/sed 's/ //g'`"

@@ -83,7 +83,7 @@ endit ()
                         /bin/echo "Ending server with ip address ${down_ip}"
                         
                         public_ip_address="`${HOME}/providerscripts/server/GetServerPublicIPAddressByIP.sh ${down_ip} ${CLOUDHOST}`"
-                        if ( [ "${NO_REVERSE_PROXY}" != "0" ] )
+                        if ( [ "${NO_REVERSE_PROXY}" = "0" ] )
                         then
                                 /bin/echo "${0} `/bin/date`: Webserver with ip address: ${down_ip} is having it's ip address removed from the DNS system" 
                                 ${HOME}/autoscaler/RemoveIPFromDNS.sh ${public_ip_address}

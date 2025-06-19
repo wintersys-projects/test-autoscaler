@@ -29,7 +29,7 @@ fi
 
 if ( [ ! -d ${HOME}/logs/initialbuild ] )
 then
-	/bin/mkdir ${HOME}/logs/initialbuild
+	/bin/mkdir -p ${HOME}/logs/initialbuild
 fi
 
 out_file="initialbuild/autoscaler-build-out-`/bin/date | /bin/sed 's/ //g'`"

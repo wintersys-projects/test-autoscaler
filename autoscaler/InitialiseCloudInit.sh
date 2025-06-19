@@ -46,7 +46,12 @@ then
 fi
 
 #Transfer the default cloud-init script to our working area so it can be filled with live data
-/bin/cp ${HOME}/providerscripts/server/cloud-init/${CLOUDHOST}/webserver.yaml ${HOME}/runtime/cloud-init/webserver.yaml
+if ( [ "${BUILD_FROM_BACKUP}" = "1" ] )
+then
+	/bin/cp ${HOME}/providerscripts/server/cloud-init/${CLOUDHOST}/webserver-by-archive.yaml ${HOME}/runtime/cloud-init/webserver.yaml
+else
+	/bin/cp ${HOME}/providerscripts/server/cloud-init/${CLOUDHOST}/webserver.yaml ${HOME}/runtime/cloud-init/webserver.yaml
+fi
 
 git_provider_domain="`${HOME}/providerscripts/git/GitProviderDomain.sh ${INFRASTRUCTURE_REPOSITORY_PROVIDER}`"
 

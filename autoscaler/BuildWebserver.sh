@@ -186,6 +186,19 @@ then
 	/usr/bin/kill -TERM $$
 fi
 
+if ( [ "${BUILD_FROM_BACKUP}" = "1" ] )
+then
+        if ( [ -f ${HOME}/whole_webserver_backup/webserver_backup.tar ] && [ -f ${HOME}/whole_webserver_backup/webserver_hidden.tar ] )
+        then
+                /usr/bin/scp -q -P ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${HOME}/whole_webserver_backup/webserver_backup.tar ${SERVER_USER}@${private_ip}:/tmp
+                /usr/bin/scp -q -P ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${HOME}/whole_webserver_backup/webserver_hidden.tar ${SERVER_USER}@${private_ip}:/tmp
+                /usr/bin/ssh -q -p ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${SERVER_USER}@${private_ip} "${SUDO} /usr/bin/tar xvf /tmp/webserver_backup.tar --keep-newer-files -C /"
+                /usr/bin/ssh -q -p ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${SERVER_USER}@${private_ip} "${SUDO} /usr/bin/tar xvf /tmp/webserver_hidden.tar --keep-newer-files -C /"
+                /usr/bin/ssh -q -p ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${SERVER_USER}@${private_ip} "${SUDO} /home/${SERVER_USER}/application/InstallApplication.sh"
+                /usr/bin/ssh -q -p ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${SERVER_USER}@${private_ip} "${SUDO} /home/${SERVER_USER}/utilities/housekeeping/ResetClonedWebserver.sh"
+        fi
+fi
+
 #If your application needs any updates to the native firewall then they will be applied here
 ${HOME}/providerscripts/cloudhost/security/firewall/UpdateNativeFirewall.sh
 

@@ -36,6 +36,7 @@ webserver_configuration_settings="`/bin/cat ${HOME}/runtime/webserver_configurat
 build_styles_settings="`/bin/cat ${HOME}/runtime/buildstyles.dat  | /bin/grep -v "^#" | /usr/bin/gzip -f | /usr/bin/base64 | /usr/bin/tr -d '\n'`"
 TIMEZONE_CONTINENT="`${HOME}/utilities/config/ExtractConfigValue.sh SERVERTIMEZONECONTINENT`"
 TIMEZONE_CITY="`${HOME}/utilities/config/ExtractConfigValue.sh  SERVERTIMEZONECITY`"
+BUILD_FROM_BACKUP="`${HOME}/utilities/config/ExtractConfigValue.sh  BUILDFROMBACKUP`"
 TIMEZONE="${TIMEZONE_CONTINENT}/${TIMEZONE_CITY}"
 SSH_PORT="`${HOME}/utilities/config/ExtractConfigValue.sh  SSHPORT`"
 

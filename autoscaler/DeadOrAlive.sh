@@ -410,6 +410,13 @@ do
                         if ( [ "${NO_REVERSE_PROXY}" = "0" ] )
                         then
                                 ${HOME}/autoscaler/AddIPToDNS.sh "`${HOME}/providerscripts/server/GetServerPublicIPAddressByIP.sh ${ip} ${CLOUDHOST}`" &
+                        else
+		                proxy_server_name="rp-${REGION}-${BUILD_IDENTIFIER}"
+  		                proxy_server_ips="`${HOME}/providerscripts/server/GetServerPrivateIPAddresses.sh ${proxy_server_name} ${CLOUDHOST}`"
+    		                for proxy_server_ip in ${proxy_server_ips}
+      		                do
+			                /usr/bin/ssh -q -p ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${SERVER_USER}@${proxy_server_ip}  "${SUDO} /home/${SERVER_USER}/providerscripts/webserver/configuration/reverseproxy/AddNewIPToReverseProxyIPList.sh ${private_ip}"
+        	                done
                         fi
                         if ( [ -f ${HOME}/runtime/potentialenders/listofipstoend.dat ] )
                         then

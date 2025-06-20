@@ -281,7 +281,8 @@ then
   		proxy_server_ips="`${HOME}/providerscripts/server/GetServerPrivateIPAddresses.sh ${proxy_server_name} ${CLOUDHOST}`"
     		for proxy_server_ip in ${proxy_server_ips}
       		do
-			/usr/bin/ssh -q -p ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${SERVER_USER}@${proxy_server_ip}  "${SUDO} /home/${SERVER_USER}/providerscripts/webserver/configuration/reverseproxy/AddNewIPToReverseProxyIPList.sh ${private_ip}"
+	:
+			#/usr/bin/ssh -q -p ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${SERVER_USER}@${proxy_server_ip}  "${SUDO} /home/${SERVER_USER}/providerscripts/webserver/configuration/reverseproxy/AddNewIPToReverseProxyIPList.sh ${private_ip}"
         	done
 	else
 		${HOME}/autoscaler/AddIPToDNS.sh ${ip}

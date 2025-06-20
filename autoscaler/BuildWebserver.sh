@@ -275,7 +275,7 @@ fi
 
 if ( [ "${failedonlinecheck}" = "0" ] )
 then
-	if ( [ "${BUILD_ARCHIVE_CHOICE}" != "virgin" ] && [ "${BUILD_ARCHIVE_CHOICE}" != "baseline" ] && [ "${NO_REVERSE_PROXY}" != "0" ] )
+	if ( [ "${NO_REVERSE_PROXY}" != "0" ] )
 	then
 		proxy_server_name="rp-${REGION}-${BUILD_IDENTIFIER}"
   		proxy_server_ips="`${HOME}/providerscripts/server/GetServerPrivateIPAddresses.sh ${proxy_server_name} ${CLOUDHOST}`"

@@ -192,6 +192,7 @@ if ( [ "${BUILD_FROM_BACKUP}" = "1" ] )
 then
         if ( [ -f ${HOME}/whole_webserver_backup/webserver_backup.tar ] && [ -f ${HOME}/whole_webserver_backup/webserver_hidden.tar ] )
         then
+		/bin/echo "${0} `/bin/date`: Copying and exracting whole_webserver_backup.tar onto the new webserver machine with ip address ${private_ip}" 
                 /usr/bin/scp -q -P ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${HOME}/whole_webserver_backup/webserver_backup.tar ${SERVER_USER}@${private_ip}:/tmp
                 /usr/bin/scp -q -P ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${HOME}/whole_webserver_backup/webserver_hidden.tar ${SERVER_USER}@${private_ip}:/tmp
                 /usr/bin/ssh -q -p ${SSH_PORT} -i ${BUILD_KEY} ${OPTIONS} ${SERVER_USER}@${private_ip} "${SUDO} /usr/bin/tar xvf /tmp/webserver_backup.tar --keep-newer-files -C /"

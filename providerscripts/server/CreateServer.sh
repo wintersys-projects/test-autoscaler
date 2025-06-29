@@ -61,13 +61,15 @@ then
 	/bin/sed -i "s/XXXXWEBSERVER_HOSTNAMEXXXX/${server_name}/g" ${HOME}/runtime/cloud-init/webserver.yaml
 	cloud_config="${HOME}/runtime/cloud-init/webserver.yaml"
 
+	firewall=""
+ 
 	if ( [ "${ACTIVE_FIREWALL}" = "2" ] || [ "${ACTIVE_FIREWALL}" = "3" ] )
 	then
-		/usr/bin/exo compute instance create "${server_name}" --instance-type standard.${server_size}  --security-group adt-webserver-${BUILD_IDENTIFIER} --template "${OS_CHOICE}" ${template_visibilty} --zone ${REGION} --ssh-key ${KEY_ID} --cloud-init "${cloud_config}"
-	else
-		/usr/bin/exo compute instance create "${server_name}" --instance-type standard.${server_size}  --template "${OS_CHOICE}" ${template_visibilty} --zone ${REGION} --ssh-key ${KEY_ID} --cloud-init "${cloud_config}"
-	fi
-  
+		firewall="--security-group adt-webserver-${BUILD_IDENTIFIER} "
+  	fi
+ 
+	/usr/bin/exo compute instance create "${server_name}" --instance-type standard.${server_size}  ${firewall} --template "${OS_CHOICE}" ${template_visibilty} --zone ${REGION} --ssh-key ${KEY_ID} --cloud-init "${cloud_config}"
+
 	if ( [ "`/usr/bin/exo compute private-network list -O json | /usr/bin/jq -r '.[] | select (.name == "adt_private_net_'${REGION}'").id'`" = "" ] )
 	then
 		/usr/bin/exo compute private-network create adt_private_net_${REGION} --zone ${REGION} --start-ip 10.0.0.20 --end-ip 10.0.0.200 --netmask 255.255.255.0
@@ -93,15 +95,8 @@ then
 	if ( [ "${ACTIVE_FIREWALL}" = "2" ] || [ "${ACTIVE_FIREWALL}" = "3" ] )
 	then
 		firewall_id="`/usr/local/bin/linode-cli --json firewalls list | /usr/bin/jq -r '.[] | select (.label == "adt-webserver-'${BUILD_IDENTIFIER}'").id'`"
-		#/usr/local/bin/linode-cli linodes create  --authorized_keys "${key}" --root_pass ${emergency_password} --region ${REGION} --image "${OS_CHOICE}" --firewall_id="${firewall_id}" --type ${server_size} --label "${server_name}" --no-defaults --interfaces.primary true --interfaces.purpose vpc --interfaces.subnet_id ${subnet_id} --interfaces.ipv4.nat_1_1 any --metadata.user_data "${cloud_config}" --disk_encryption "enabled"
-		#/usr/local/bin/linode-cli linodes create --authorized_keys "${key}" --root_pass "${emergency_password}" --region ${REGION} --image "${OS_CHOICE}" --firewall_id="${firewall_id}" --type ${server_size} --label "${server_name}" --no-defaults --interface_generation "legacy_config" --interfaces '[ { "primary": true, "purpose": "vpc", "subnet_id": '${subnet_id}',  "ipv4": { "nat_1_1": "any" } } ]' --metadata.user_data "${cloud_config}" --disk_encryption "enabled"
- 	     #   /usr/local/bin/linode-cli linodes create --authorized_keys "${key}" --root_pass "${emergency_password}" --region ${REGION} --image "${OS_CHOICE}" --firewall_id="${firewall_id}" --type ${server_size} --label "${server_name}" --no-defaults --interface_generation "linode" --interfaces ' [ { "purpose": "public", "firewall_id": '${firewall_id}', "default_route": { "ipv4": true }, "public": { "ipv4": { "addresses": [ { "address": "auto", "primary": true } ] } , "subnet_id": '${subnet_id}' } }, { "purpose": "vpc", "firewall_id": '${firewall_id}',  "vpc": { "ipv4": { "addresses": [ { "address": "auto", "primary": true } ] } , "subnet_id": '${subnet_id}' } } ]' --metadata.user_data "${cloud_config}" --disk_encryption "enabled"
 		/usr/local/bin/linode-cli linodes create --authorized_keys "${key}" --root_pass "${emergency_password}" --region ${REGION} --image "${OS_CHOICE}" --firewall_id="${firewall_id}"  --type ${server_size} --label "${server_name}" --no-defaults --interface_generation "linode" --interfaces ' [ { "purpose": "public", "firewall_id": '${firewall_id}', "default_route": { "ipv4": true }, "public": { "ipv4": { "addresses": [ { "address": "auto", "primary": true } ] } } }, { "purpose": "vpc", "firewall_id": '${firewall_id}',  "vpc": { "ipv4": { "addresses": [ { "address": "auto", "primary": true } ] } , "subnet_id": '${subnet_id}' } } ]' --metadata.user_data "${cloud_config}" --disk_encryption "enabled"	
    	else
-		#/usr/local/bin/linode-cli linodes create  --authorized_keys "${key}" --root_pass ${emergency_password} --region ${REGION} --image "${OS_CHOICE}" --type ${server_size} --label "${server_name}" --no-defaults --interfaces.primary true --interfaces.purpose vpc --interfaces.subnet_id ${subnet_id} --interfaces.ipv4.nat_1_1 any  --metadata.user_data "${cloud_config}" --disk_encryption "enabled"
-		#/usr/local/bin/linode-cli linodes create --authorized_keys "${key}" --root_pass "${emergency_password}" --region ${REGION} --image "${OS_CHOICE}" --type ${server_size} --label "${server_name}" --no-defaults --interface_generation "legacy_config" --interfaces '[ { "primary": true, "purpose": "vpc", "subnet_id": '${subnet_id}',  "ipv4": { "nat_1_1": "any" } } ]' --metadata.user_data "${cloud_config}" --disk_encryption "enabled"
-		#/usr/local/bin/linode-cli linodes create --authorized_keys "${key}" --root_pass "${emergency_password}" --region ${REGION} --image "${OS_CHOICE}" --type ${server_size} --label "${server_name}" --no-defaults --interface_generation "linode" --interfaces ' [ { "purpose": "public", "firewall_id": "'${firewall_id}'", "default_route": { "ipv4": true }, "public": { "ipv4": { "addresses": [ { "address": "auto", "primary": true } ] } }},   { "purpose": "vpc", "default_route": { "ipv4": true },  "firewall_id": "'${firewall_id}'", "vpc": { "ipv4": { "addresses": [ { "address": "auto", "primary": false } ], "ranges": [ { "range": "'${VPC_IP_RANGE}'" } ] } } , "subnet_id": '${subnet_id}'  } ]' --metadata.user_data "${cloud_config}" --disk_encryption "enabled"
-	      #  /usr/local/bin/linode-cli linodes create --authorized_keys "${key}" --root_pass "${emergency_password}" --region ${REGION} --image "${OS_CHOICE}" --type ${server_size} --label "${server_name}" --no-defaults --interface_generation "linode" --interfaces ' [ { "purpose": "public", "firewall_id": '${firewall_id}', "default_route": { "ipv4": true }, "public": { "ipv4": { "addresses": [ { "address": "auto", "primary": true } ] } , "subnet_id": '${subnet_id}' } }, { "purpose": "vpc", "firewall_id": '${firewall_id}',  "vpc": { "ipv4": { "addresses": [ { "address": "auto", "primary": true } ] } , "subnet_id": '${subnet_id}' } } ]' --metadata.user_data "${cloud_config}" --disk_encryption "enabled"
  		/usr/local/bin/linode-cli linodes create --authorized_keys "${key}" --root_pass "${emergency_password}" --region ${REGION} --image "${OS_CHOICE}" --type ${server_size} --label "${server_name}" --no-defaults --interface_generation "linode" --interfaces ' [ { "purpose": "public", "firewall_id": '${firewall_id}', "default_route": { "ipv4": true }, "public": { "ipv4": { "addresses": [ { "address": "auto", "primary": true } ] } } }, { "purpose": "vpc", "firewall_id": '${firewall_id}',  "vpc": { "ipv4": { "addresses": [ { "address": "auto", "primary": true } ] } , "subnet_id": '${subnet_id}' } } ]' --metadata.user_data "${cloud_config}" --disk_encryption "enabled"	
   	fi
 fi
@@ -125,19 +120,21 @@ then
 
 	firewall_id="`/usr/bin/vultr firewall group list -o json | /usr/bin/jq -r '.firewall_groups[] | select (.description == "adt-webserver-'${BUILD_IDENTIFIER}'").id'`"
 
-	ddos="false"
+	ddos=""
 	if ( [ "${DDOS_PROTECTION}" = "1" ] )
 	then
-		ddos="true"
+		ddos="--ddos=true"
 	fi
-
+ 
+ 	firewall=""
+  	if ( [ "${ACTIVE_FIREWALL}" = "2" ] || [ "${ACTIVE_FIREWALL}" = "3" ] )
+	then
+ 		firewall='--firewall-group="'${firewall_id}'"'
+   	fi
+ 
 	/bin/sed -i "s/XXXXWEBSERVER_HOSTNAMEXXXX/${server_name}/g" ${HOME}/runtime/cloud-init/webserver.yaml
 	cloud_config="${HOME}/runtime/cloud-init/webserver.yaml"
 
-	if ( [ "${ACTIVE_FIREWALL}" = "2" ] || [ "${ACTIVE_FIREWALL}" = "3" ] )
-	then
-		/usr/bin/vultr instance create --label="${server_name}" --region="${REGION}" --plan="${server_size}" --ipv6=false -s ${KEY_ID} --os="${OS_CHOICE}" --ddos="${ddos}" --userdata="`/bin/cat ${cloud_config}`" --firewall-group="${firewall_id}" --vpc-enable --vpc-ids ${vpc_id}
-	else
-		/usr/bin/vultr instance create --label="${server_name}" --region="${REGION}" --plan="${server_size}" --ipv6=false -s ${KEY_ID} --os="${OS_CHOICE}" --ddos="${ddos}" --userdata="`/bin/cat ${cloud_config}`" --vpc-enable --vpc-ids ${vpc_id}
-	fi
+	/usr/bin/vultr instance create --label="${server_name}" --region="${REGION}" --plan="${server_size}" --ipv6=false -s ${KEY_ID} --os="${OS_CHOICE}" ${ddos} ${firewall} --userdata="`/bin/cat ${cloud_config}`" --vpc-enable --vpc-ids ${vpc_id}
+
 fi
